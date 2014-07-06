@@ -8,9 +8,9 @@ module Common
     driver.find_element(:xpath, "//input[@type='text']").send_keys(username)
     driver.find_element(:xpath, "//input[@type='password']").clear
     driver.find_element(:xpath, "//input[@type='password']").send_keys(password)
-    driver.find_element(:xpath, "//input[@value='Login']").click
       
     wait.until { driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[2]/a").displayed? }
+
   end
 
   def logout(driver)
