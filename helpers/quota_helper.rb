@@ -2,7 +2,6 @@ module Common
   module QuotaHelper
  
  def updatequota(driver, project_name, vcpu, instances, ram, fip, keypair, secgroup, secgroup_rules, storage, volumes, snapshots, expect_entry=true)
-      
       wait = Selenium::WebDriver::Wait.new(:timeout => 60)
 
       #Find manage quota for specific project

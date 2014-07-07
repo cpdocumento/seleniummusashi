@@ -32,24 +32,24 @@ class ManageQuota < MiniTest::Test
     range = 10
     increment = 10
 
-    login(@driver, admin0, @test_data["def_admin_pass"])
+    login(@driver, @test_data["def_admin_user"] + 0.to_s, @test_data["def_admin_pass"])
       range.times do
-         vcpu+=increment
-         instances+=increment
-         ram+=increment
-         fip+=increment
-         keypair+=increment
-         secgroup+=increment
-         secgroup_rules+=increment
-         storage+=increment
-         volumes+=increment
-         snapshots+=increment
-         range+=increment
+         vcpu += increment
+         instances += increment
+         ram += increment
+         fip += increment
+         keypair += increment
+         secgroup += increment
+         secgroup_rules += increment
+         storage += increment
+         volumes += increment
+         snapshots += increment
+         range += increment
 
-         updatequota(@driver, proj0, vcpu, instances, ram, fip, keypair, secgroup, secgroup_rules, storage, volumes, snapshots)
+         updatequota(@driver, @test_data[user_project] + 0.to_s, vcpu, instances, ram, fip, keypair, secgroup, secgroup_rules, storage, volumes, snapshots)
       end
     logout(@driver)
-    
-    
+
   end
+
 end
