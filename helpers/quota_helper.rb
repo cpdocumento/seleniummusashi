@@ -4,15 +4,15 @@ module Common
  def updatequota(driver, project_name, vcpu, instances, ram, fip, keypair, secgroup, secgroup_rules, storage, volumes, snapshots, expect_entry=true)
       wait = Selenium::WebDriver::Wait.new(:timeout => 60)
 
-      #Find manage quota for specific project
+      # Find manage quota for specific project
       !60.times{ break if (driver.find_element(:xpath, "//tr[@class='ng-scope']/td[normalize-space(text())=\'#{ project_name }\'").displayed? rescue false); sleep 1 }
       driver.find_element(:xpath, "//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ project_name }\"]/..//button[2]").click
       driver.find_element(:xpath, "(//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ project_name }\"]/..//a[contains(text(),'Manage Quota')])").click
      
-      #Verify if already in manage quota
+      # Verify if already in manage quota
       !60.times{ break if (driver.find_element(:link_text, "Compute").displayed? rescue false); sleep 1 }
      
-      #Update quota limit
+      # Update quota limit
        driver.find_element(:name, "vcpus").clear
        driver.find_element(:name, "vcpus").send_keys(vcpu)
        driver.find_element(:name, "instances").clear
@@ -35,7 +35,7 @@ module Common
        driver.find_element(:name, "snapshots").send_keys(snapshots)
        driver.find_element(:xpath, "//div[3]/button[2]").click
 
-      #Check if user is redirected back to projects page and quota has been updated
+      # Check if user is redirected back to projects page and quota has been updated
        !30.times{ break if (driver.find_element(:link_text, "Quotas for #{project_name} has been successfully updated.").displayed? rescue false); sleep 1 }
     end
 
