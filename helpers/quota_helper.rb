@@ -36,7 +36,7 @@ module Common
        driver.find_element(:name, "snapshots").send_keys(snapshots)
        driver.find_element(:xpath, "//div[3]/button[2]").click
 
-       #Check if user is redirected back to projects page and quota has been updated
+      #Check if user is redirected back to projects page and quota has been updated
        !30.times{ break if (driver.find_element(:link_text, "Quotas for #{project_name} has been successfully updated.").displayed? rescue false); sleep 1 }
     end
 

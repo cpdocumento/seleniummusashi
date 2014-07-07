@@ -19,18 +19,18 @@ class ManageQuota < MiniTest::Test
   end
   
   def test_update_quota
-    vcpu = 100
-    instances = 20
+    vcpu = 50
+    instances = 15
     ram = 10000
-    fip = 20
+    fip = 15
     keypair = 5
     secgroup = 5
     secgroup_rules = 5
     storage = 10000
-    volumes = 20
-    snapshots =20
+    volumes = 15
+    snapshots = 15
     range = 10
-    increment = 5
+    increment = 10
 
     login(@driver, admin0, @test_data["def_admin_pass"])
       range.times do
