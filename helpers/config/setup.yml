@@ -1,4 +1,4 @@
 # environment to test
-envi : "http://116.93.114.3:8080/"
+envi : "http://54.179.154.246:8080/"
 
 test_browser : "firefox"

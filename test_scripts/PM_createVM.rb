@@ -21,7 +21,7 @@ class CreateVM < MiniTest::Test
 
   def test_createVM
     @driver.manage().window().maximize()
-    wait = Selenium::WebDriver::Wait.new(:timeout => 15)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 20)
     result = @db.execute("select pm from userindex").first
     current_pm_index = result[0]
 
@@ -34,7 +34,11 @@ class CreateVM < MiniTest::Test
   
     for i in 1..10
       createVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["common_description"], 5)
-    end  
+    end
+    
+    for i in 1..2
+      attachVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["res_instance"] + i.to_s)
+    end
   end
   
 end
