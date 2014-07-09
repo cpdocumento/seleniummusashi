@@ -5,6 +5,7 @@ class CreateVM < MiniTest::Test
   
   include Common::AuthenticationHelper
   include Common::InstanceHelper
+  include Common::VolumeHelper
   
   def setup
     @test_data = Data.config.test_data
@@ -30,7 +31,10 @@ class CreateVM < MiniTest::Test
     for i in 1..10
       createInstance(@driver, @test_data["res_instance"] + i.to_s, "m1.tiny", "cirros-0.3.2-x86_64", "default", @test_data["res_keypair"] + i.to_s)
     end
-    # createVolume(@driver, @test_data["res_volume"] + i.to_s, 5)
+  
+    for i in 1..10
+      createVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["common_description"], 5)
+    end  
   end
   
 end
