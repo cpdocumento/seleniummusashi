@@ -10,11 +10,13 @@ module Common
     driver.find_element(:xpath, "//input[@type='password']").send_keys(password)
     driver.find_element(:xpath, "//input[@value='Login']").click
       
-    wait.until { driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[2]/a").displayed? }
+    assert !60.times{ break if (driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[2]/a").displayed? rescue false); sleep 1 }
   end
 
   def logout(driver)
-    driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[2]/a").click   
+    driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[2]/a").click
+    
+    assert !60.times{ break if (driver.find_element(:xpath, "//input[@type='text']").displayed? rescue false); sleep 1 }
   end
 
   end
