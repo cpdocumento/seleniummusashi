@@ -3,10 +3,7 @@ require current_directory + "/../test_helper"
 
 class CreateVM < MiniTest::Test
   
-  include Common::FloatingIPHelper
   include Common::AuthenticationHelper
-  include Common::KeypairHelper
-  include Common::SecurityGroupHelper
   include Common::InstanceHelper
   
   def setup
