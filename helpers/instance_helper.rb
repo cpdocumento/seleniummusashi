@@ -2,7 +2,7 @@ module Common
   module InstanceHelper
   
   def createInstance(driver, name, size, image, secgroup, keypair)
-    wait = Selenium::WebDriver::Wait.new(:timeout => 180)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
     
     # click launch instance button    
     wait.until { driver.find_element(:css, "i.fa.fa-hdd-o").displayed? }
@@ -36,7 +36,7 @@ module Common
     # wait until the status of instance is no longer BUILD
     assert !60.times{ break if !(driver.find_element(:xpath, "//div[@window-class=\"wizard-modal\"]").displayed? rescue false); sleep 1 }
     sleep 10
-    wait.until { !(driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ name }\"]/../..//td[4]").text =~ /BUILD/) }
+    assert !120.times{ break if !(driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ name }\"]/../..//td[4]").text =~ /BUILD/) rescue false; sleep 2 }
   end
   
   end

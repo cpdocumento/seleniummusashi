@@ -21,8 +21,28 @@ module Common
     driver.find_element(:xpath, "//div[3]/button[2]").click
     
     # wait until the volume is no longer in creating status
-    wait.until { !(driver.find_element(:xpath, "//tr/td[normalize-space(text())=\"#{ name }\"]/..//td[4]").text =~ /creating/) }
+    assert !120.times{ break if !(driver.find_element(:xpath, "//tr/td[normalize-space(text())=\"#{ name }\"]/..//td[4]").text =~ /creating/) rescue false; sleep 2 }
   end
 
+  def attachVolume(driver, vol_name, instance_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+   
+    # click attach option of volume
+    wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-floppy-o").click    
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[7]/div/button").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[7]/div/button").click
+    
+    # select instance to attach to 
+    wait.until { driver.find_element(:xpath, "//*[@id=\"attachVolume\"]/div/select").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"attachVolume\"]/div/select").click
+    driver.find_element(:xpath, "//form[@id='attachVolume']/div/select/option[normalize-space(text())=\"#{ instance_name }\"]").click
+    driver.find_element(:xpath, "//div[3]/button[2]").click
+    
+    # wait until the volume is no longer in attaching status
+    wait.until { !(driver.find_element(:xpath, "//*[@id=\"attachVolume\"]/div/select").displayed?) }
+    assert !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /in-use/) rescue false; sleep 2 }
+  end
+  
   end
 end
