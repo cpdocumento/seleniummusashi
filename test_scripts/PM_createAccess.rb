@@ -7,8 +7,6 @@ class CreateAccess < MiniTest::Test
   include Common::AuthenticationHelper
   include Common::UsersHelper
   include Common::KeypairHelper
-  include Common::SecurityGroupHelper
-  include Common::FloatingIPHelper
 
   def setup
     @test_data = Data.config.test_data
@@ -24,9 +22,8 @@ class CreateAccess < MiniTest::Test
   
   def test_import_keypair
     login(@driver, @test_data["user_mem"], @test_data["user_password"])
-    @driver.find_element(:css, "i.fa.fa-lock").click
     for i in 1..10
-      import_keypair(@driver, @test_data["keypair_name"] + i.to_s, @test_data["keypair_keys"])
+      import_keypair(@driver, @test_data["res_keypair"] + i.to_s, @test_data["keypair_keys"])
     end
   end
 
