@@ -39,5 +39,23 @@ module Common
     assert !120.times{ break if !(driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ name }\"]/../..//td[4]").text =~ /BUILD/) rescue false; sleep 2 }
   end
   
+  def stopInstance(driver, instance_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    
+    # go to instances page    
+    wait.until { driver.find_element(:css, "i.fa.fa-hdd-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-hdd-o").click
+    
+    # go to instance details page
+    assert !60.times{ break if (driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ instance_name }\"]/../..//td[4]").text =~ /ACTIVE/) rescue false; sleep 2 }
+    driver.find_element(:link, instance_name).click
+    wait.until { driver.find_element(:xpath, "//ul[@ng-show=\"instance.actions\"]").displayed? }
+   # driver.find_element(:xpath, "//*[@id=\"details-action\"]/ul[2]/li[2]/a").click
+    driver.find_element(:link, "  Stop").click
+    
+    # wait until instance status is SHUTOFF
+    assert !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"details-action\"]/table/tbody/tr[1]/td[2]").text =~ /SHUTOFF/) rescue false; sleep 2 }
+  end
+  
   end
 end
