@@ -62,5 +62,21 @@ module Common
     assert !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /available/) rescue false; sleep 2 }
   end
   
+  def deleteVolume(driver, vol_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+   
+    # click delete option of volume
+    wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-floppy-o").click    
+    sleep 3
+    
+    #perform deletion
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]").displayed? }  
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/button[2]").click
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/ul/li[2]/a").click
+    wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+  end
+  
   end
 end
