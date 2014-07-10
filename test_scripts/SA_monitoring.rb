@@ -34,7 +34,6 @@ class Monitoring < MiniTest::Test
 
       update_settings(@driver, warning, error)
     end
-
     
     logout(@driver)
 
