@@ -66,7 +66,6 @@ module Common
   		 	driver.find_element(:name, "to_port").send_keys(to)
   		 	driver.find_element(:name, "ip_range").clear
   		 	driver.find_element(:name, "ip_range").send_keys(ip)
-        #sleep2
   		 	driver.find_element(:css, "body > div.modal.fade.dash-width-500.in > div > div > div.modal-body.ng-scope > form > table > tbody > tr > td.align-right > button").click
   	end
 	
