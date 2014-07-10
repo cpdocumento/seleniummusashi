@@ -6,6 +6,7 @@ class CreateVM < MiniTest::Test
   include Common::AuthenticationHelper
   include Common::InstanceHelper
   include Common::VolumeHelper
+  include Common::FloatingIPHelper
   
   def setup
     @test_data = Data.config.test_data
@@ -31,14 +32,22 @@ class CreateVM < MiniTest::Test
     for i in 1..10
       createInstance(@driver, @test_data["res_instance"] + i.to_s, "m1.tiny", "cirros-0.3.2-x86_64", "default", @test_data["res_keypair"] + i.to_s)
     end
-  
+    
     for i in 1..10
       createVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["common_description"], 5)
     end
     
-    for i in 1..2
+    for i in 1..10
       attachVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["res_instance"] + i.to_s)
     end
+    
+    wait.until { @driver.find_element(:css, "i.fa.fa-lock").displayed? }
+    @driver.find_element(:css, "i.fa.fa-lock").click
+    for i in 1..10
+      wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").displayed? }    
+      ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[#{ i+1 }]/td[2]").text
+      attachIP(@driver, @test_data["res_instance"] + i.to_s, ip)
+    end  
   end
   
 end
