@@ -53,4 +53,17 @@ class CreateAccess < MiniTest::Test
   #  custom_rule(@driver, @test_data["res_secgroup"])
   #end
 
+  def test_allocate_floating_ip
+    @driver.manage().window().maximize()
+    wait = Selenium::WebDriver::Wait.new(:timeout => 20)
+    result = @db.execute("select pm from userindex").first
+    current_pm_index = result[0]
+		
+    login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
+    for i in 1..8
+      allocateIP(@driver)
+    end
+  end
+	
 end

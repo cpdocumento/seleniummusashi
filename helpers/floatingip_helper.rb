@@ -41,5 +41,42 @@ module Common
     wait.until { (driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ ip }\"]/..//td/div/button[1]").text =~ /Attach/) rescue false; sleep 1 }
   end
 
+  def allocateIP(driver)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    
+    wait.until { driver.find_element(:css, "i.fa.fa-lock").displayed? }
+    driver.find_element(:css, "i.fa.fa-lock").click
+    sleep 2
+    wait.until { driver.find_element(:xpath, "//div[@id='dash-access']/div[3]/div[2]/button").displayed? }
+    driver.find_element(:xpath, "//div[@id='dash-access']/div[3]/div[2]/button").click
+
+    wait.until { driver.find_element(:css, "div.form-group").displayed? }
+
+    driver.find_element(:xpath, "//div[3]/button[2]").click
+		
+    assert !60.times{ break if (driver.find_element(:css, "p.ng-scope.ng-binding > p").displayed? rescue false); sleep 1 }
+  end
+
+  def disallocateIP(driver, ip)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    
+    wait.until { driver.find_element(:css, "i.fa.fa-lock").displayed? }
+    driver.find_element(:css, "i.fa.fa-lock").click
+		
+    assert !60.times{ break if (driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ ip }\"]").displayed? rescue false); sleep 1 }
+
+    sleep 2
+    driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ ip }\"]/..//td[4]/div/button[2]").click
+		
+    sleep 2
+    wait.until { driver.find_element(:link, "Release").displayed? }
+    driver.find_element(:link, "Release").click
+		
+    sleep 2
+    driver.find_element(:xpath, "(//button[@type='button'])[2]").click
+		
+    assert !60.times{ break if (driver.find_element(:css, "p.ng-scope.ng-binding > p").displayed? rescue false); sleep 1 }
+  end
+
   end
 end
