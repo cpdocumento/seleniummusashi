@@ -2,8 +2,9 @@ module Common
   module AuthenticationHelper
  
   def login(driver, username="", password="", expect_entry=true) 
-    wait = Selenium::WebDriver::Wait.new(:timeout => 15)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
     
+    wait.until { driver.find_element(:xpath, "//input[@type='text']").displayed? }
     driver.find_element(:xpath, "//input[@type='text']").clear
     driver.find_element(:xpath, "//input[@type='text']").send_keys(username)
     driver.find_element(:xpath, "//input[@type='password']").clear

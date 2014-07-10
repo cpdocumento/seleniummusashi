@@ -70,13 +70,31 @@ module Common
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
     sleep 2
     
-    #perform deletion
+    # perform deletion
     wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]").displayed? }  
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/button[2]").click
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/ul/li[2]/a").click
     sleep 2
     wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+  end
+  
+  def deleteBootableVolume(driver, boot_volume)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+   
+    # click delete option of volume
+    wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-floppy-o").click    
+    sleep 2
+    
+    # perform deletion
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]").displayed? }  
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]/..//td[5]/div/button[2]/span").click
+    sleep 2
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]/..//td/div/ul/li/a").click
+    sleep 2
+    wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click  
   end
   
   end
