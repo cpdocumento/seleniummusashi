@@ -6,6 +6,7 @@ class DeleteVM < Minitest::Test
   include Common::AuthenticationHelper
   include Common::VolumeHelper
   include Common::InstanceHelper
+  include Common::FloatingIPHelper
 
   def setup
     @test_data = Data.config.test_data
@@ -40,5 +41,12 @@ class DeleteVM < Minitest::Test
       deleteVolume(@driver, @test_data["res_volume"] + i.to_s)
     end
     
+    wait.until { @driver.find_element(:css, "i.fa.fa-lock").displayed? }
+    @driver.find_element(:css, "i.fa.fa-lock").click
+    for i in 1..10
+      wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").displayed? }    
+      ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[#{ i+1 }]/td[2]").text
+      detachIP(@driver, ip)
+    end  
   end
 end
