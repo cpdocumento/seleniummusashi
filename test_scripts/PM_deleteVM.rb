@@ -5,6 +5,7 @@ class DeleteVM < Minitest::Test
 
   include Common::AuthenticationHelper
   include Common::VolumeHelper
+  include Common::InstanceHelper
 
   def setup
     @test_data = Data.config.test_data
@@ -26,8 +27,13 @@ class DeleteVM < Minitest::Test
 
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
-    for i in 1..3
+    
+    for i in 1..10
       detachVolume(@driver, @test_data["res_volume"] + i.to_s)
+    end
+    
+    for i in 1..10
+       stopInstance(@driver, @test_data["res_instance"] + i.to_s)
     end
     
   end
