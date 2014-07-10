@@ -34,7 +34,7 @@ class CreateVM < MiniTest::Test
     end
     
     for i in 1..10
-      createVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["common_description"], 5)
+      createVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["common_description"], 1)
     end
     
     for i in 1..10
