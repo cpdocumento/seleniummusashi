@@ -44,5 +44,23 @@ module Common
     assert !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /in-use/) rescue false; sleep 2 }
   end
   
+  def detachVolume(driver, vol_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+   
+    # click detach option of volume
+    wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-floppy-o").click    
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[7]/div/button").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[7]/div/button").click
+    
+    # confirmation message
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+  
+    # wait until the volume is no longer attached
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[1]/div").displayed? }
+    assert !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /available/) rescue false; sleep 2 }
+  end
+  
   end
 end
