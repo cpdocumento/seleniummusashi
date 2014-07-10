@@ -47,4 +47,10 @@ class CreateAccess < MiniTest::Test
     end
   end
 
+  def test_add_rule
+    login(@driver, @test_data["user_mem"] + 1.to_s, @test_data["user_password"])
+    
+    custom_rule(@driver, @test_data["res_secgroup"])
+  end
+
 end
