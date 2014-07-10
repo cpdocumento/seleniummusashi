@@ -6,9 +6,22 @@ module Common
       
     wait.until { driver.find_element(:css, "i.fa.fa-group").displayed? }
     driver.find_element(:css, "i.fa.fa-group").click
-    wait.until { driver.find_element(:xpath, "//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ username }\"]") }
+    wait.until { driver.find_element(:xpath, "//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ username }\"]").displayed? }
     driver.find_element(:xpath, "//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ username }\"]/..//button[2]").click
     driver.find_element(:xpath, "(//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ username }\"]/..//a[contains(text(),'Delete Member')])").click
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+  end
+  
+  def delete_pa(driver, username)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 180)
+      
+    wait.until { driver.find_element(:css, "i.fa.fa-group").displayed? }
+    driver.find_element(:css, "i.fa.fa-group").click
+    
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ username }\"]").displayed? }  
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ username }\"]/..//td/div/button[2]").click
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ username }\"]/..//td/div/ul/li[2]/a").click
+    wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
   end
 

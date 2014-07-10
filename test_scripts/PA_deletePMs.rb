@@ -18,7 +18,7 @@ class DeletePM < MiniTest::Test
     @driver.quit
   end
   
-  def test_login    
+  def test_deletePM    
     login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
     result = @db.execute("select pm from userindex").first.map(&:to_i)
     current_pm_index = result[0]
