@@ -101,5 +101,18 @@ module Common
     wait.until { driver.find_element(:xpath, "//p[@ng-bind-html=\"alert.msgs\"]").displayed? }
   end
   
+  def deleteSnapshot(driver, snapshot_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    
+    # go to images page    
+    wait.until { driver.find_element(:css, "i.fa.fa-copy").displayed? }
+    driver.find_element(:css, "i.fa.fa-copy").click
+    
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ snapshot_name }\"]").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ snapshot_name }\"]/..//td/div/button").click
+    wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+  end
+  
   end
 end
