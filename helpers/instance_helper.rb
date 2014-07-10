@@ -77,5 +77,29 @@ module Common
     driver.find_element(:xpath, "//*[@id=\"dash-instances\"]/div[2]/div/button[1]").click
   end
   
+  def createSnapshot(driver, instance_name, snapshot_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    sleep 2
+    
+    # go to instances page    
+    wait.until { driver.find_element(:css, "i.fa.fa-hdd-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-hdd-o").click
+    
+    # go to instance details page
+    sleep 2
+    assert !60.times{ break if (driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ instance_name }\"]").displayed? ) rescue false; sleep 2 }
+    wait.until { driver.find_element(:link, instance_name).displayed? }
+    driver.find_element(:link, instance_name).click
+    wait.until { driver.find_element(:xpath, "//ul[@ng-show=\"instance.actions\"]").displayed? }
+    driver.find_element(:link, "  Snapshot").click
+
+    wait.until { driver.find_element(:xpath, "/html/body/div[3]/div/div").displayed? }
+    driver.find_element(:name, "name").clear
+    driver.find_element(:name, "name").send_keys(snapshot_name)
+    driver.find_element(:xpath, "//div[3]/button[2]").click
+    wait.until { !(driver.find_element(:xpath, "/html/body/div[3]/div/div").displayed?) }
+    wait.until { driver.find_element(:xpath, "//p[@ng-bind-html=\"alert.msgs\"]").displayed? }
+  end
+  
   end
 end
