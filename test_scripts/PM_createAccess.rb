@@ -49,9 +49,28 @@ class CreateAccess < MiniTest::Test
   end
 
   def test_add_rule
-    login(@driver, @test_data["user_mem"] + 1.to_s, @test_data["user_password"])
+    @driver.manage().window().maximize()
+    wait = Selenium::WebDriver::Wait.new(:timeout => 20)
+    result = @db.execute("select pm from userindex").first
+    current_pm_index = result[0]
+  
+    login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }    
     
-    custom_rule(@driver, @test_data["res_secgroup"])
+    sec_rules = [ {from:"-1", to:"-1", ip:"0.0.0.0/0", protocol:"ICMP"},
+                  {from:"443", to:"443", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"161", to:"161", ip:"0.0.0.0/0", protocol:"UDP"},
+                  {from:"22", to:"22", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"80", to:"80", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"8080", to:"8080", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"3306", to:"3306", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"1", to:"4", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"2", to:"5", ip:"0.0.0.0/0", protocol:"UDP"},
+                  {from:"3", to:"6", ip:"0.0.0.0/0", protocol:"ICMP"}
+                ]
+    for i in 1..10
+      custom_rule(@driver, @test_data["res_secgroup"] + 1.to_s, sec_rules)
+    end
   end
 
   def test_allocate_floating_ip
@@ -59,7 +78,7 @@ class CreateAccess < MiniTest::Test
     wait = Selenium::WebDriver::Wait.new(:timeout => 20)
     result = @db.execute("select pm from userindex").first
     current_pm_index = result[0]
-		
+  
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
     for i in 1..3
