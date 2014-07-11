@@ -3,7 +3,7 @@ def_admin_user: "admin"
 def_admin_pass: "klnm12"
 def_admin_email: "admin@musashi.com"
 
-user_mem: "mem"
+user_mem: "pm"
 user_pa: "pa"
 user_admin: "admin"
 user_emailusername: "qa_musashi"

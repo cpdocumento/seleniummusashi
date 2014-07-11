@@ -36,11 +36,12 @@ module Common
     driver.find_element(:name, "volumes").send_keys(volumes)
     driver.find_element(:name, "snapshots").clear
     driver.find_element(:name, "snapshots").send_keys(snapshots)
-    driver.find_element(:xpath, "//div[3]/button[2]").click
+    driver.find_element(:xpath, "/html/body/div[3]/div/div/div[3]/button[2]").click
 
     # Check if user is redirected back to projects page and quota has been updated
     wait.until { !(driver.find_element(:xpath, "/html/body/div[3]/div/div").displayed?) }
     assert !60.times{ break if (driver.find_element(:xpath, "/html/body/div/div/div/div/div[2]/div[1]/div").displayed?) rescue false; sleep 1 }
+    sleep 2
   end
 
   end

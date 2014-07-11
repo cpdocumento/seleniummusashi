@@ -63,6 +63,7 @@ module Common
     wait.until { driver.find_element(:xpath, "//ul[@ng-show=\"instance.actions\"]").displayed? }
     driver.find_element(:xpath, "//*[@id='details-action']/ul[2]/li[9]/a").click
 
+    sleep 2
     wait.until { driver.find_element(:xpath, "//*[@id='instance-monitoring-settings']/div[3]/div[2]/h4/span").displayed? }
 
     #cpu

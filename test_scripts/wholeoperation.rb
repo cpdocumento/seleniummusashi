@@ -19,8 +19,9 @@ class ScenarioA < MiniTest::Test
     @db = SQLite3::Database.new "testdb.db"
     @driver = Selenium::WebDriver.for @config["test_browser"].to_sym
     @driver.get(@config["envi"] + "/")
-    loop_start = 1
-    loop_end = 10
+    
+    @admin_account = @test_data["def_admin_user"]
+    @admin_pass = @test_data["def_admin_pass"]
   end
 
   def teardown
@@ -29,6 +30,10 @@ class ScenarioA < MiniTest::Test
   
   def test_wholeOperation
     @driver.manage().window().maximize()
+    
+    # number of times to execute
+    loop_start = 1
+    loop_end = 3
     
     # variables used
     wait = Selenium::WebDriver::Wait.new(:timeout => 20)
@@ -47,15 +52,26 @@ class ScenarioA < MiniTest::Test
     q_storage = 10000
     q_volumes = 20
     q_snapshots = 30
+    sec_rules = [ {from:"-1", to:"-1", ip:"0.0.0.0/0", protocol:"ICMP"},
+                  {from:"443", to:"443", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"161", to:"161", ip:"0.0.0.0/0", protocol:"UDP"},
+                  {from:"22", to:"22", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"80", to:"80", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"8080", to:"8080", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"3306", to:"3306", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"1", to:"4", ip:"0.0.0.0/0", protocol:"TCP"},
+                  {from:"2", to:"5", ip:"0.0.0.0/0", protocol:"UDP"},
+                  {from:"3", to:"6", ip:"0.0.0.0/0", protocol:"ICMP"}
+                ]
     
     # MONITORING SETTINGS
-    login(@driver, @test_data["user_admin"] + 0.to_s, @test_data["user_password"])
+    login(@driver, @admin_account, @admin_pass)
     wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}      
-    for i in loop_start..loop_end 
-      warning += increase
-      error += increase
-      update_settings(@driver, warning, error)
-    end
+    #for i in loop_start..loop_end 
+    #  warning += increase
+    #  error += increase
+    #  update_settings(@driver, warning, error)
+    #end
     # change the quota for project where testing is to take place
     updatequota(@driver, @test_data["user_project"] + 0.to_s, q_vcpu, q_instances, q_ram, q_fip, q_keypair, q_secgroup, q_secgroup_rules, q_storage, q_volumes, q_snapshots)
     logout(@driver)
@@ -69,13 +85,12 @@ class ScenarioA < MiniTest::Test
     for i in loop_start..loop_end
       create_secgroup(@driver, @test_data["res_secgroup"] + i.to_s, @test_data["common_description"])
     end
-    ############################
-    # set rules here
-    # allocate IP here
-    #for i in loop_start..loop_end
-    #  allocateIP(@driver)
-    #end
-    ###########################
+    for i in loop_start..loop_end
+      custom_rule(@driver, @test_data["res_secgroup"] + i.to_s, sec_rules)
+    end
+    for i in loop_start..loop_end
+      allocateIP(@driver)
+    end
     
     # CREATE VMS
     for i in loop_start..loop_end
@@ -111,9 +126,14 @@ class ScenarioA < MiniTest::Test
     # PM MONITORING
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
-    ############################
-    #insert pm monitoring here
-    ############################
+    warning = 30
+    error = 35
+    increase = 5
+    for i in loop_start..loop_end
+      for t in loop_start..loop_end
+        update_instance_monitoring(@driver, @test_data["res_instance"] + i.to_s, warning, error)
+      end      
+    end
      
     # DELETE VM
     for i in loop_start..loop_end
@@ -140,6 +160,13 @@ class ScenarioA < MiniTest::Test
       delete_secgroup(@driver, @test_data["res_secgroup"] + i.to_s)
     end
     logout(@driver)
+    wait.until { @driver.find_element(:css, "i.fa.fa-lock").displayed? }
+    @driver.find_element(:css, "i.fa.fa-lock").click
+    for i in loop_start..loop_end
+      wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").displayed? }    
+      ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[#{ i+1 }]/td[2]").text
+      disallocateIP(@driver, ip)
+    end    
     
     # DELETE PMS
     login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
@@ -153,7 +180,7 @@ class ScenarioA < MiniTest::Test
     logout(@driver)
     
     # CHANGE PROJECT QUOTA
-    login(@driver, @test_data["user_admin"] + 0.to_s, @test_data["user_password"])
+    login(@driver, @admin_account, @admin_pass)
     wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}
     for i in loop_start..loop_end
       q_vcpu += 5
