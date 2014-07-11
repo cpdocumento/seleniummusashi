@@ -85,9 +85,6 @@ module Common
 
 		#save settings
 		driver.find_element(:xpath, "//*[@id='instance-monitoring-settings']/div[7]/button[1]").click
-
-		#back to instances page
-		driver.find_element(:css, "i.fa.fa-hdd-o").click
   end
 end
 end

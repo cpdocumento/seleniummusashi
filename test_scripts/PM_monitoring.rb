@@ -27,13 +27,10 @@ class PMonitoring < MiniTest::Test
     range = 10 
 
     range.times do 
-
       warning += increase
       error += increase
-
       update_instance_monitoring(@driver, @test_data["res_instance"] + 1.to_s, warning, error)
     end
-    
     logout(@driver)
   end
 end

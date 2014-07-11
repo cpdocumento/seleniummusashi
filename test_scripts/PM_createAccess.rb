@@ -69,7 +69,7 @@ class CreateAccess < MiniTest::Test
                   {from:"3", to:"6", ip:"0.0.0.0/0", protocol:"ICMP"}
                 ]
     for i in 1..10
-      custom_rule(@driver, @test_data["res_secgroup"] + 1.to_s, sec_rules)
+      custom_rule(@driver, @test_data["res_secgroup"] + i.to_s, sec_rules)
     end
   end
 
