@@ -8,6 +8,7 @@ class CreateAccess < MiniTest::Test
   include Common::UsersHelper
   include Common::KeypairHelper
   include Common::SecurityGroupHelper
+  include Common::FloatingIPHelper
 
   def setup
     @test_data = Data.config.test_data
@@ -47,11 +48,11 @@ class CreateAccess < MiniTest::Test
     end
   end
 
-  #def test_add_rule
-  #  login(@driver, @test_data["user_mem"] + 1.to_s, @test_data["user_password"])
-  #  
-  #  custom_rule(@driver, @test_data["res_secgroup"])
-  #end
+  def test_add_rule
+    login(@driver, @test_data["user_mem"] + 1.to_s, @test_data["user_password"])
+    
+    custom_rule(@driver, @test_data["res_secgroup"])
+  end
 
   def test_allocate_floating_ip
     @driver.manage().window().maximize()
@@ -61,7 +62,7 @@ class CreateAccess < MiniTest::Test
 		
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
-    for i in 1..8
+    for i in 1..3
       allocateIP(@driver)
     end
   end
