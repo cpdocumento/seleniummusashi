@@ -19,6 +19,8 @@ class ManageQuota < MiniTest::Test
   end
   
   def test_update_quota
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    
     vcpu = 50
     instances = 15
     ram = 10000
@@ -33,23 +35,23 @@ class ManageQuota < MiniTest::Test
     increment = 10
 
     login(@driver, @test_data["user_admin"] + 0.to_s, @test_data["user_password"])
-      range.times do
-         vcpu += increment
-         instances += increment
-         ram += increment
-         fip += increment
-         keypair += increment
-         secgroup += increment
-         secgroup_rules += increment
-         storage += increment
-         volumes += increment
-         snapshots += increment
-         range += increment
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}
+    range.times do
+      vcpu += increment
+      instances += increment
+      ram += increment
+      fip += increment
+      keypair += increment
+      secgroup += increment
+      secgroup_rules += increment
+      storage += increment
+      volumes += increment
+      snapshots += increment
+      range += increment
 
-         updatequota(@driver, @test_data["user_project"] + 0.to_s, vcpu, instances, ram, fip, keypair, secgroup, secgroup_rules, storage, volumes, snapshots)
-      end
+      updatequota(@driver, @test_data["user_project"] + 0.to_s, vcpu, instances, ram, fip, keypair, secgroup, secgroup_rules, storage, volumes, snapshots)
+    end
     logout(@driver)
-
   end
 
 end

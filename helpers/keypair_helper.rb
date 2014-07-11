@@ -2,6 +2,7 @@ module Common
   module KeypairHelper
 
   def import_keypair(driver, res_keypair="", keypair_keys="")
+    sleep 2
     driver.find_element(:css, "i.fa.fa-lock").click
     !60.times{ break if (driver.find_element(:xpath, "//div[@id='dash-access']/div[5]/div[2]/button").displayed? rescue false); sleep 1 }
     driver.find_element(:xpath, "//div[@id='dash-access']/div[5]/div[2]/button").click
