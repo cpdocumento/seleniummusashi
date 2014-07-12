@@ -81,11 +81,7 @@ module Common
     wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dash-instances\"]/div[2]/div/button[1]").click
     
-    # go to instances page    
-    wait.until { driver.find_element(:css, "i.fa.fa-hdd-o").displayed? }
-    driver.find_element(:css, "i.fa.fa-hdd-o").click
-    
-    assert !180.times{ break if (driver.find_elements(:xpath, "//*[@id=\"instances-list\"]/tbody/tr").size == (rows-1)) rescue false; sleep 2 }, "Timeout. Instance is taking too long to delete."
+    assert !240.times{ break if (driver.find_elements(:xpath, "//*[@id=\"instances-list\"]/tbody/tr").size == (rows-1)) rescue false; sleep 2 }, "Timeout. Instance is taking too long to delete."
     puts "Helper: Successfully deleted instance #{ instance_name }"
   end
   
