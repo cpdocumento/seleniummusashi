@@ -72,16 +72,16 @@ module Common
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
     sleep 2
-    rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr").size
     # perform deletion
-    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]").displayed? }  
-    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/button[2]").click
-    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/ul/li[2]/a").click
+    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]").displayed? }
+    rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr").size
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/button[2]").click
+    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td/div/ul/li[2]/a").click
     sleep 2
     wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
-    
-    assert !180.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr").size = (rows-1)) rescue false; sleep 1 }, "Timeout. Volume is taking too long to delete." 
+
+    assert !180.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr").size == (rows-1)) rescue false; sleep 2 }, "Timeout. Volume is taking too long to delete." 
     puts "Helper: Successfully deleted volume #{ vol_name }"
   end
   
@@ -91,8 +91,9 @@ module Common
     # click delete option of volume
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
-    sleep 2
+    sleep 5
     # go through each row
+    waitForProcessingVolumeSnapshots(driver)
     rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
     rows_orig = rows
     while (rows>1) do
@@ -117,6 +118,7 @@ module Common
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
     sleep 2
+    waitForProcessingVolumeSnapshots(driver)
     rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
     rows.downto(2) do |i|
       driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[5]/div/button[2]/span").click
@@ -128,6 +130,14 @@ module Common
       wait.until { driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size == (i - 1) }
     end
     puts "Helper: Successfully cleaned up volume snapshots"
+  end
+  
+  def waitForProcessingVolumeSnapshots(driver)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
+    rows.downto(2) do |i|
+      wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[3]").text == "available" || "error" }
+    end
   end
   
   end

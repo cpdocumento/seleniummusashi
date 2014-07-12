@@ -65,7 +65,7 @@ class ScenarioA < MiniTest::Test
                 ]
     
     # MONITORING SETTINGS
-    puts "======Logging in SA account======"
+    puts "\n======Logging in SA account======"
     login(@driver, @admin_account, @admin_pass)
     wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}      
     for i in loop_start..loop_end 
@@ -78,7 +78,7 @@ class ScenarioA < MiniTest::Test
     updatequota(@driver, @test_data["user_project"] + 0.to_s, q_vcpu, q_instances, q_ram, q_fip, q_keypair, q_secgroup, q_secgroup_rules, q_storage, q_volumes, q_snapshots)
     puts "Updated project quota where testing is to take place."
     logout(@driver)
-    puts "======Logged out SA. Logging in Project Member now.====="
+    puts "\n======Logged out SA. Logging in Project Member now.====="
     # CREATE KP, SG, FIP
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
@@ -100,7 +100,7 @@ class ScenarioA < MiniTest::Test
     puts "Allocated #{ loop_end } IPs."
     
     # CREATE VMS
-    puts "======Creating VMs now======."
+    puts "\n======Creating VMs now======."
     for i in loop_start..loop_end
       createInstance(@driver, @test_data["res_instance"] + i.to_s, @test_data["res_flavor"], @test_data["res_image"], "default", @test_data["res_keypair"] + i.to_s)
     end
@@ -129,7 +129,7 @@ class ScenarioA < MiniTest::Test
     end
     puts "Finished creating a snapshot for each of the  #{ loop_end } instances."
     logout(@driver)
-    puts "======Logged out Project Member. Logging in Project Admin now.====="
+    puts "\n======Logged out Project Member. Logging in Project Admin now.====="
     sleep 2
     login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/a").text == @test_data["user_project"] + 0.to_s } 
@@ -140,7 +140,7 @@ class ScenarioA < MiniTest::Test
     end
     puts "Finished deleting the #{ loop_end }  instance snapshots and their equivalent volume snapshots." 
     logout(@driver)
-    puts "======Logged out Project Admin. Logging in Project Member now.====="
+    puts "\n======Logged out Project Admin. Logging in Project Member now.====="
     # PM MONITORING
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
@@ -155,7 +155,7 @@ class ScenarioA < MiniTest::Test
     puts "Finished updating monitoring settings #{ loop_end } times for each of the #{ loop_end } instances."
      
     # DELETE VM
-    puts "======Deleting VMs now======."
+    puts "\n======Deleting VMs now======."
     for i in loop_start..loop_end
       detachVolume(@driver, @test_data["res_volume"] + i.to_s)
     end
@@ -199,7 +199,7 @@ class ScenarioA < MiniTest::Test
     end
     puts "All #{ loop_end } floating IPs have been release/disallocated."    
     logout(@driver)    
-    puts "======Logged out Project Member. Logging in Project Admin now.====="
+    puts "\n======Logged out Project Member. Logging in Project Admin now.====="
     # DELETE PMS
     login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
     result = @db.execute("select pm from userindex").first.map(&:to_i)
@@ -211,7 +211,7 @@ class ScenarioA < MiniTest::Test
     @db.execute "update userindex set pm=?", last_pm_index + 1
     puts "Deleted #{ loop_end } members."
     logout(@driver)
-    puts "======Logged out Project Admin. Logging in System Admin now.====="
+    puts "\n======Logged out Project Admin. Logging in System Admin now.====="
     # CHANGE PROJECT QUOTA
     login(@driver, @admin_account, @admin_pass)
     wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/ }
