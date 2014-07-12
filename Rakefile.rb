@@ -22,7 +22,9 @@ namespace 'musashi' do
   desc "Execute Scenario C n times; include TIMES=n at end of command"
   task :project  do
     times = ENV['TIMES'].to_i
+    prepfile = "test_scripts/projectoperationprep.rb"
     file = "test_scripts/projectoperation.rb"
+    system("ruby #{ prepfile }")
     times.times do
       system("ruby #{ file }")
     end
@@ -31,7 +33,9 @@ namespace 'musashi' do
   desc "Execute Scenario D n times; include TIMES=n at end of command"
   task :vm do
     times = ENV['TIMES'].to_i
+    prepfile = "test_scripts/vmoperationprep.rb"
     file = "test_scripts/vmoperation.rb"
+    system("ruby #{ prepfile }")
     times.times do
       system("ruby #{ file }")
     end

@@ -1,7 +1,7 @@
 current_directory = File.expand_path(File.dirname(__FILE__))
 require current_directory + "/../test_helper"
 
-class ScenarioD < MiniTest::Test
+class ScenarioDPrep < MiniTest::Test
 
   include Common::AuthenticationHelper
   include Common::UsersHelper
@@ -62,45 +62,46 @@ class ScenarioD < MiniTest::Test
                   {from:"2", to:"5", ip:"0.0.0.0/0", protocol:"UDP"},
                   {from:"3", to:"6", ip:"0.0.0.0/0", protocol:"ICMP"}
                 ]
+    
+    # MONITORING SETTINGS
+    puts "\n======Logging in SA account======"
+    login(@driver, @admin_account, @admin_pass)
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}      
+    for i in loop_start..loop_end 
+      warning += increase
+      error += increase
+      update_settings(@driver, warning, error)
+    end
+    puts "Monitoring settings have been updated #{ loop_end } times."
+    # change the quota for project where testing is to take place
+    updatequota(@driver, @test_data["user_project"] + "0d", q_vcpu, q_instances, q_ram, q_fip, q_keypair, q_secgroup, q_secgroup_rules, q_storage, q_volumes, q_snapshots)
+    puts "Updated project quota where testing is to take place."
+    logout(@driver)
+    puts "\n======Logged out SA. Logging in Project Member now.====="
+    # CREATE KP, SG, FIP
     login(@driver, @test_data["user_mem"] + "1d", @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + "0d"}
-
-    createVolume(@driver, @test_data["res_volume"], @test_data["common_description"], @test_data["res_volume_size"].to_i)
-    puts "Finished creating volume."
-    
-    attachVolume(@driver, @test_data["res_volume"], @test_data["res_instance"])
-    puts "Finished attaching the volume."
-    wait.until { @driver.find_element(:css, "i.fa.fa-lock").displayed? }
-    @driver.find_element(:css, "i.fa.fa-lock").click
-    wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").displayed? }    
-    ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").text
-    attachIP(@driver, @test_data["res_instance"], ip)
-    puts "Finished attaching an IP to instance."
-    
     for i in loop_start..loop_end
-      warning = 30
-      error = 35
-      increase = 5
-      for t in loop_start..loop_end
-        update_instance_monitoring(@driver, @test_data["res_instance"], warning, error)
-        warning += increase
-        error += increase
-      end      
+      import_keypair(@driver, @test_data["res_keypair"] + i.to_s, @test_data["res_key"])
     end
-    puts "Finished updating monitoring settings #{ loop_end } times for the instance."
-     
-    # detach resources from VM
-    puts "\n======Detaching resources from instance now======."
-    detachVolume(@driver, @test_data["res_volume"])
-    puts "Detached volume."
-    detachIP(@driver, @test_data["res_instance"])
-    puts "Detached IP."
-    stopInstance(@driver, @test_data["res_instance"])
-    puts "Instance has been stopped."
-    deleteVolume(@driver, @test_data["res_volume"])
-    puts "Volumes has been deleted."
-    startInstance(@driver, @test_data["res_instance"])
-    puts "Instance has been started."
+    puts "Created #{ loop_end } keypairs."
+    for i in loop_start..loop_end
+      create_secgroup(@driver, @test_data["res_secgroup"] + i.to_s, @test_data["common_description"])
+    end
+    puts "Created #{ loop_end } security groups."
+    for i in loop_start..loop_end
+      custom_rule(@driver, @test_data["res_secgroup"] + i.to_s, sec_rules)
+    end
+    puts "Added 10 security group rules for #{ loop_end } security groups."
+    
+    allocateIP(@driver)
+    
+    puts "Allocated IP."
+    
+    # CREATE VMS
+    
+    createInstance(@driver, @test_data["res_instance"], @test_data["res_flavor"], @test_data["res_image"], "default", @test_data["res_keypair"] + 1.to_s)
+    puts "Finished creating instance."
     
     logout(@driver)
   end
