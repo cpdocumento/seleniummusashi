@@ -142,8 +142,8 @@ class ScenarioA < MiniTest::Test
     #logout(@driver)
     #puts "======Logged out Project Admin. Logging in Project Member now.====="
     # PM MONITORING
-    login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
-    wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
+    #login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
+    #wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
     warning = 30
     error = 35
     increase = 5
