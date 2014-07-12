@@ -101,7 +101,6 @@ module Common
         wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
         wait.until { driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size == (rows_orig - 1) }
-        puts name + " deleted this, description is" + desc
         break
       else
         rows = rows -1

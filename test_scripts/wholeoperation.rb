@@ -168,6 +168,9 @@ class ScenarioA < MiniTest::Test
        stopInstance(@driver, @test_data["res_instance"] + i.to_s)
     end
     puts "All #{ loop_end } instances have been stopped."
+    # do volume snapshots cleanup
+    deleteAllVolumeSnapshots(@driver)
+    puts "Cleaned up all volume snapshots first."
     for i in loop_start..loop_end
       deleteVolume(@driver, @test_data["res_volume"] + i.to_s)
     end
@@ -207,8 +210,6 @@ class ScenarioA < MiniTest::Test
     end
     @db.execute "update userindex set pm=?", last_pm_index + 1
     puts "Deleted #{ loop_end } members."
-    # do volume snapshots cleanup
-    deleteAllVolumeSnapshots(@driver)
     logout(@driver)
     puts "======Logged out Project Admin. Logging in System Admin now.====="
     # CHANGE PROJECT QUOTA
