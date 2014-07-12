@@ -36,7 +36,7 @@ class DeleteVM < Minitest::Test
     for i in 1..10
       detachIP(@driver, @test_data["res_instance"] + i.to_s)
     end
-
+    
     for i in 1..10
        stopInstance(@driver, @test_data["res_instance"] + i.to_s)
     end
@@ -47,7 +47,13 @@ class DeleteVM < Minitest::Test
     
     for i in 1..10
       deleteInstance(@driver, @test_data["res_instance"] + i.to_s)
-    end 
+    end
+    
+    #login(@driver, "memkim", @test_data["user_password"])
+    #wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
+    #
+    #deleteAllVolSnaps(@driver)
+    
   end
   
 end

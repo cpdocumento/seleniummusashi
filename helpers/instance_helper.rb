@@ -4,6 +4,7 @@ module Common
   def createInstance(driver, name, size, image, secgroup, keypair)
     wait = Selenium::WebDriver::Wait.new(:timeout => 120)
     
+    sleep 5
     # click launch instance button    
     wait.until { driver.find_element(:css, "i.fa.fa-hdd-o").displayed? }
     driver.find_element(:css, "i.fa.fa-hdd-o").click
@@ -78,7 +79,7 @@ module Common
   end
   
   def createSnapshot(driver, instance_name, snapshot_name)
-    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 180)
     sleep 2
     
     # go to instances page    
@@ -99,19 +100,28 @@ module Common
     driver.find_element(:xpath, "//div[3]/button[2]").click
     wait.until { !(driver.find_element(:xpath, "/html/body/div[3]/div/div").displayed?) }
     wait.until { driver.find_element(:xpath, "//p[@ng-bind-html=\"alert.msgs\"]").displayed? }
+    
+    # wait for vol snap to finish creating
+    sleep 2
+    wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-floppy-o").click
+    sleep 5
+    !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"snapshot for #{ snapshot_name }\"]/..//td[normalize-space(text())=\"\"]/..//td[3]").text =~/available/) rescue false; sleep 3 }  
   end
   
   def deleteSnapshot(driver, snapshot_name)
     wait = Selenium::WebDriver::Wait.new(:timeout => 120)
-    
+    sleep 2
     # go to images page    
     wait.until { driver.find_element(:css, "i.fa.fa-copy").displayed? }
     driver.find_element(:css, "i.fa.fa-copy").click
     
     wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ snapshot_name }\"]").displayed? }
+    sleep 2
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ snapshot_name }\"]/..//td/div/button").click
     wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+    sleep 2
   end
   
   end

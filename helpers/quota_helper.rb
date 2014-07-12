@@ -38,10 +38,10 @@ module Common
     driver.find_element(:name, "snapshots").send_keys(snapshots)
     driver.find_element(:xpath, "/html/body/div[3]/div/div/div[3]/button[2]").click
 
-    # Check if user is redirected back to projects page and quota has been updated
-    wait.until { !(driver.find_element(:xpath, "/html/body/div[3]/div/div").displayed?) }
-    assert !60.times{ break if (driver.find_element(:xpath, "/html/body/div/div/div/div/div[2]/div[1]/div").displayed?) rescue false; sleep 1 }
+    wait.until { !(driver.find_element(:xpath, "//div[2]/form/h3[1]").text =~ /Compute/) }
+    wait.until { driver.find_element(:xpath, "//p[@ng-bind-html=\"alert.msgs\"]").displayed? }
     sleep 2
+    wait.until { driver.find_element(:xpath, "//div[2]/table/tbody/tr/td[normalize-space(text())=\"#{ project_name }\"]").displayed? }
   end
 
   end

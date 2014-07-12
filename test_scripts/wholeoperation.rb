@@ -65,43 +65,54 @@ class ScenarioA < MiniTest::Test
                 ]
     
     # MONITORING SETTINGS
+    puts "======Logging in SA account======"
     login(@driver, @admin_account, @admin_pass)
     wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}      
-    #for i in loop_start..loop_end 
-    #  warning += increase
-    #  error += increase
-    #  update_settings(@driver, warning, error)
-    #end
+    for i in loop_start..loop_end 
+      warning += increase
+      error += increase
+      update_settings(@driver, warning, error)
+    end
+    puts "Monitoring settings have been updated #{ loop_end } times."
     # change the quota for project where testing is to take place
     updatequota(@driver, @test_data["user_project"] + 0.to_s, q_vcpu, q_instances, q_ram, q_fip, q_keypair, q_secgroup, q_secgroup_rules, q_storage, q_volumes, q_snapshots)
+    puts "Updated project quota where testing is to take place."
     logout(@driver)
-    
+    puts "======Logged out SA. Logging in Project Member now.====="
     # CREATE KP, SG, FIP
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
     for i in loop_start..loop_end
-      import_keypair(@driver, @test_data["res_keypair"] + i.to_s, @test_data["keypair_keys"])
+      import_keypair(@driver, @test_data["res_keypair"] + i.to_s, @test_data["res_key"])
     end
+    puts "Created #{ loop_end } keypairs."
     for i in loop_start..loop_end
       create_secgroup(@driver, @test_data["res_secgroup"] + i.to_s, @test_data["common_description"])
     end
+    puts "Created #{ loop_end } security groups."
     for i in loop_start..loop_end
       custom_rule(@driver, @test_data["res_secgroup"] + i.to_s, sec_rules)
     end
+    puts "Added 10 security group rules for #{ loop_end } security groups."
     for i in loop_start..loop_end
       allocateIP(@driver)
     end
+    puts "Allocated #{ loop_end } IPs."
     
     # CREATE VMS
+    puts "======Creating VMs now======."
     for i in loop_start..loop_end
       createInstance(@driver, @test_data["res_instance"] + i.to_s, @test_data["res_flavor"], @test_data["res_image"], "default", @test_data["res_keypair"] + i.to_s)
     end
+    puts "Finished creating #{ loop_end } instances."
     for i in loop_start..loop_end
       createVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["common_description"], @test_data["res_volume_size"].to_i)
     end
+    puts "Finished creating #{ loop_end } volumes."
     for i in loop_start..loop_end
       attachVolume(@driver, @test_data["res_volume"] + i.to_s, @test_data["res_instance"] + i.to_s)
     end
+    puts "Finished attaching a volume for each of the  #{ loop_end } instances."
     wait.until { @driver.find_element(:css, "i.fa.fa-lock").displayed? }
     @driver.find_element(:css, "i.fa.fa-lock").click
     for i in loop_start..loop_end
@@ -109,20 +120,27 @@ class ScenarioA < MiniTest::Test
       ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[#{ i+1 }]/td[2]").text
       attachIP(@driver, @test_data["res_instance"] + i.to_s, ip)
     end
+    puts "Finished attaching an IP for each of the  #{ loop_end } instances."
     
     # CREATE AND DELETE SNAPSHOTS
-    for i in loop_start..loop_end
-      createSnapshot(@driver, @test_data["res_instance"] + i.to_s,  @test_data["res_snapshot"] + i.to_s)
-    end
-    logout(@driver)
-    login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
-    wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/a").text == @test_data["user_project"] + 0.to_s } 
-    for i in loop_start..loop_end
-      deleteSnapshot(@driver,  @test_data["res_snapshot"] + i.to_s)
-      deleteBootableVolume(@driver,  "snapshot for " + @test_data["res_snapshot"] + i.to_s)
-    end
-    logout(@driver)
-    
+    #for i in loop_start..loop_end
+    #  createSnapshot(@driver, @test_data["res_instance"] + i.to_s,  @test_data["res_snapshot"] + i.to_s)
+    #sleep 2
+    #end
+    #puts "Finished creating a snapshot for each of the  #{ loop_end } instances."
+    #logout(@driver)
+    #puts "======Logged out Project Member. Logging in Project Admin now.====="
+    #sleep 2
+    #login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
+    #wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/a").text == @test_data["user_project"] + 0.to_s } 
+    #for i in loop_start..loop_end
+    #  deleteSnapshot(@driver,  @test_data["res_snapshot"] + i.to_s)
+    #  sleep 2
+    #  deleteBootableVolume(@driver,  "snapshot for " + @test_data["res_snapshot"] + i.to_s)
+    #end
+    #puts "Finished deleting the #{ loop_end }  instance snapshots and their equivalent volume snapshots." 
+    #logout(@driver)
+    #puts "======Logged out Project Admin. Logging in Project Member now.====="
     # PM MONITORING
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
@@ -134,40 +152,51 @@ class ScenarioA < MiniTest::Test
         update_instance_monitoring(@driver, @test_data["res_instance"] + i.to_s, warning, error)
       end      
     end
+    puts "Finished updating monitoring settings #{ loop_end } times for each of the #{ loop_end } instances."
      
     # DELETE VM
+    puts "======Deleting VMs now======."
     for i in loop_start..loop_end
       detachVolume(@driver, @test_data["res_volume"] + i.to_s)
     end
+    puts "Detached each volume attached to and instance #{loop_end} times."
     for i in loop_start..loop_end
       detachIP(@driver, @test_data["res_instance"] + i.to_s)
     end
+    puts "Detached each IP attached to an instance #{loop_end} times."
     for i in loop_start..loop_end
        stopInstance(@driver, @test_data["res_instance"] + i.to_s)
     end
+    puts "All #{ loop_end } instances have been stopped."
     for i in loop_start..loop_end
       deleteVolume(@driver, @test_data["res_volume"] + i.to_s)
-    end    
+    end
+    puts "All #{ loop_end } volumes have been deleted."
     for i in loop_start..loop_end
       deleteInstance(@driver, @test_data["res_instance"] + i.to_s)
-    end 
+    end
+    puts "All #{ loop_end } instances have been deleted."
     
     # DELETE KP, SG, RELEASE FIP
     for i in loop_start..loop_end
       delete_keypair(@driver, @test_data["res_keypair"] + i.to_s)
     end
+    puts "All #{ loop_end } keypairs have been deleted."
     for i in loop_start..loop_end
       delete_secgroup(@driver, @test_data["res_secgroup"] + i.to_s)
     end
-    logout(@driver)
+    puts "All #{ loop_end } security groups have been deleted."
+    
     wait.until { @driver.find_element(:css, "i.fa.fa-lock").displayed? }
     @driver.find_element(:css, "i.fa.fa-lock").click
     for i in loop_start..loop_end
       wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").displayed? }    
-      ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[#{ i+1 }]/td[2]").text
+      ip = @driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr[2]/td[2]").text
       disallocateIP(@driver, ip)
-    end    
-    
+    end
+    puts "All #{ loop_end } floating IPs have been release/disallocated."    
+    logout(@driver)    
+    puts "======Logged out Project Member. Logging in Project Admin now.====="
     # DELETE PMS
     login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
     result = @db.execute("select pm from userindex").first.map(&:to_i)
@@ -177,11 +206,12 @@ class ScenarioA < MiniTest::Test
       delete_member(@driver, @test_data["user_mem"] + i.to_s)
     end
     @db.execute "update userindex set pm=?", last_pm_index + 1
+    puts "Deleted #{ loop_end } members."
     logout(@driver)
-    
+    puts "======Logged out Project Admin. Logging in System Admin now.====="
     # CHANGE PROJECT QUOTA
     login(@driver, @admin_account, @admin_pass)
-    wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/}
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[1]/span").text =~ /SYSTEM ADMIN/ }
     for i in loop_start..loop_end
       q_vcpu += 5
       q_instances += 5
@@ -193,9 +223,9 @@ class ScenarioA < MiniTest::Test
       q_storage += 5
       q_volumes += 5
       q_snapshots += 5
-      q_range += 5
       updatequota(@driver, @test_data["user_project"] + 0.to_s, q_vcpu, q_instances, q_ram, q_fip, q_keypair, q_secgroup, q_secgroup_rules, q_storage, q_volumes, q_snapshots)
     end
+    puts "Updated the quota for the user project #{ loop_end } times"
     
     # DELETE PROJECTS/PAS
     pa_result = @db.execute("select pa from userindex").first.map(&:to_i)
@@ -204,7 +234,8 @@ class ScenarioA < MiniTest::Test
     for i in current_pa_index..last_pa_index
       delete_pa(@driver, @test_data["user_pa"] + i.to_s)
     end
-    @db.execute "update userindex set pa=?", last_pa_index + 1    
+    @db.execute "update userindex set pa=?", last_pa_index + 1
+    puts "Deleted #{ loop_end } project admins and their projects."
     logout(@driver)
   end
 

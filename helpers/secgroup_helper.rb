@@ -31,6 +31,7 @@ module Common
   end
 
   def custom_rule(driver, res_secgroup, sec_rules)
+    sleep 5  
     !60.times{ break if (driver.find_element(:css, "i.fa.fa-lock").displayed? rescue false); sleep 1 }
     driver.find_element(:css, "i.fa.fa-lock").click
     !60.times{ break if (driver.find_element(:xpath, "//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ res_secgroup }\"]").displayed? rescue false); sleep 1 }    
