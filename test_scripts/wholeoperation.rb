@@ -33,7 +33,7 @@ class ScenarioA < MiniTest::Test
     
     # number of times to execute
     loop_start = 1
-    loop_end = 3
+    loop_end = 10
     
     # variables used
     wait = Selenium::WebDriver::Wait.new(:timeout => 20)
@@ -144,12 +144,14 @@ class ScenarioA < MiniTest::Test
     # PM MONITORING
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
-    warning = 30
-    error = 35
-    increase = 5
     for i in loop_start..loop_end
+      warning = 30
+      error = 35
+      increase = 5
       for t in loop_start..loop_end
         update_instance_monitoring(@driver, @test_data["res_instance"] + i.to_s, warning, error)
+        warning += increase
+        error += increase
       end      
     end
     puts "Finished updating monitoring settings #{ loop_end } times for each of the #{ loop_end } instances."

@@ -60,6 +60,24 @@ module Common
     puts "Helper: Successfully stopped instance #{ instance_name }"
   end
   
+  def startInstance(driver, instance_name)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    
+    # go to instances page    
+    wait.until { driver.find_element(:css, "i.fa.fa-hdd-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-hdd-o").click
+    
+    # go to instance details page
+    assert !60.times{ break if (driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ instance_name }\"]/../..//td[4]").text =~ /SHUTOFF/) rescue false; sleep 2 }
+    driver.find_element(:link, instance_name).click
+    wait.until { driver.find_element(:xpath, "//ul[@ng-show=\"instance.actions\"]").displayed? }
+    driver.find_element(:link, "  Start").click
+    
+    # wait until instance status is ACTIVE
+    assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"details-action\"]/table/tbody/tr[1]/td[2]").text =~ /ACTIVE/) rescue false; sleep 2 }, "Timeout. Instance is still not in SHUTOFF state within the wait time set."
+    puts "Helper: Successfully started instance #{ instance_name }"
+  end
+  
   def deleteInstance(driver, instance_name)
     wait = Selenium::WebDriver::Wait.new(:timeout => 120)
     sleep 2
