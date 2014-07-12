@@ -33,7 +33,7 @@ class ScenarioB < MiniTest::Test
     
     # number of times to execute
     loop_start = 1
-    loop_end = 2
+    loop_end = 10
     
     # variables used
     wait = Selenium::WebDriver::Wait.new(:timeout => 20)
