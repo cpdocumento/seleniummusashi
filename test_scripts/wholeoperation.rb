@@ -123,27 +123,27 @@ class ScenarioA < MiniTest::Test
     puts "Finished attaching an IP for each of the  #{ loop_end } instances."
     
     # CREATE AND DELETE SNAPSHOTS
-    #for i in loop_start..loop_end
-    #  createSnapshot(@driver, @test_data["res_instance"] + i.to_s,  @test_data["res_snapshot"] + i.to_s)
-    #sleep 2
-    #end
-    #puts "Finished creating a snapshot for each of the  #{ loop_end } instances."
-    #logout(@driver)
-    #puts "======Logged out Project Member. Logging in Project Admin now.====="
-    #sleep 2
-    #login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
-    #wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/a").text == @test_data["user_project"] + 0.to_s } 
-    #for i in loop_start..loop_end
-    #  deleteSnapshot(@driver,  @test_data["res_snapshot"] + i.to_s)
-    #  sleep 2
-    #  deleteBootableVolume(@driver,  "snapshot for " + @test_data["res_snapshot"] + i.to_s)
-    #end
-    #puts "Finished deleting the #{ loop_end }  instance snapshots and their equivalent volume snapshots." 
-    #logout(@driver)
-    #puts "======Logged out Project Admin. Logging in Project Member now.====="
+    for i in loop_start..loop_end
+      createSnapshot(@driver, @test_data["res_instance"] + i.to_s,  @test_data["res_snapshot"] + i.to_s)
+    sleep 2
+    end
+    puts "Finished creating a snapshot for each of the  #{ loop_end } instances."
+    logout(@driver)
+    puts "======Logged out Project Member. Logging in Project Admin now.====="
+    sleep 2
+    login(@driver, @test_data["user_pa"] + 0.to_s, @test_data["user_password"])
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/a").text == @test_data["user_project"] + 0.to_s } 
+    for i in loop_start..loop_end
+      deleteSnapshot(@driver,  @test_data["res_snapshot"] + i.to_s)
+      sleep 2
+      deleteBootableVolume(@driver,  "snapshot for " + @test_data["res_snapshot"] + i.to_s)
+    end
+    puts "Finished deleting the #{ loop_end }  instance snapshots and their equivalent volume snapshots." 
+    logout(@driver)
+    puts "======Logged out Project Admin. Logging in Project Member now.====="
     # PM MONITORING
-    #login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
-    #wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
+    login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
+    wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
     warning = 30
     error = 35
     increase = 5
@@ -207,6 +207,8 @@ class ScenarioA < MiniTest::Test
     end
     @db.execute "update userindex set pm=?", last_pm_index + 1
     puts "Deleted #{ loop_end } members."
+    # do volume snapshots cleanup
+    deleteAllVolumeSnapshots(@driver)
     logout(@driver)
     puts "======Logged out Project Admin. Logging in System Admin now.====="
     # CHANGE PROJECT QUOTA
@@ -228,14 +230,14 @@ class ScenarioA < MiniTest::Test
     puts "Updated the quota for the user project #{ loop_end } times"
     
     # DELETE PROJECTS/PAS
-    pa_result = @db.execute("select pa from userindex").first.map(&:to_i)
-    current_pa_index = pa_result[0]
-    last_pa_index = current_pa_index + loop_end
-    for i in current_pa_index..last_pa_index
-      delete_pa(@driver, @test_data["user_pa"] + i.to_s)
-    end
-    @db.execute "update userindex set pa=?", last_pa_index + 1
-    puts "Deleted #{ loop_end } project admins and their projects."
+    #pa_result = @db.execute("select pa from userindex").first.map(&:to_i)
+    #current_pa_index = pa_result[0]
+    #last_pa_index = current_pa_index + loop_end
+    #for i in current_pa_index..last_pa_index
+    #  delete_pa(@driver, @test_data["user_pa"] + i.to_s)
+    #end
+    #@db.execute "update userindex set pa=?", last_pa_index + 1
+    #puts "Deleted #{ loop_end } project admins and their projects."
     logout(@driver)
   end
 

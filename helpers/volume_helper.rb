@@ -86,50 +86,43 @@ module Common
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
     sleep 2
-    
-    # perform deletion
-    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]").displayed? }  
-    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]/..//td[5]/div/button[2]/span").click
-    sleep 2
-    #driver.find_element(:link_text, "Delete").click
-    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]/..//td/div/ul/li/a").click
-    sleep 2
-    wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
-    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
-    #wait until deletion is finished
-    !120.times{ break if !(driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]").displayed?) rescue false; sleep 2 }
+    # go through each row
+    rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
+    rows_orig = rows
+    while (rows>1) do
+      name = driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[1]").text
+      desc = driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[2]").text
+      if (name==boot_volume && desc=="")
+        driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/button[2]/span").click
+        sleep 2
+        driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/ul/li/a").click
+        wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
+        driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+        wait.until { driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size == (rows_orig - 1) }
+        puts name + " deleted this, description is" + desc
+        break
+      else
+        rows = rows -1
+      end
+    end
   end
   
-  #def delBootableVol(driver, boot_volume)
-  #  wait = Selenium::WebDriver::Wait.new(:timeout => 60)
-  # 
-  #  # click delete option of volume
-  #  wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
-  #  driver.find_element(:css, "i.fa.fa-floppy-o").click    
-  #  sleep 2
-  #  wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"#{ boot_volume }\"]/..//td[normalize-space(text())=\"\"]").displayed? }
-  #  
-  #  # go through each row
-  #  
-  #  
-  #end
-  #
-  #def deleteAllVolSnaps(driver)
-  #  wait = Selenium::WebDriver::Wait.new(:timeout => 60)
-  #  wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
-  #  driver.find_element(:css, "i.fa.fa-floppy-o").click    
-  #  sleep 2
-  #  rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
-  #  rows.downto(2) do |i|
-  #    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[5]/div/button[2]/span").click
-  #    sleep 2
-  #    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td/div/ul/li/a").click
-  #    sleep 2
-  #    wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
-  #    driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
-  #    wait.until { driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size == (i - 1) }      
-  #  end
-  #end
+  def deleteAllVolumeSnapshots(driver)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
+    driver.find_element(:css, "i.fa.fa-floppy-o").click    
+    sleep 2
+    rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
+    rows.downto(2) do |i|
+      driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[5]/div/button[2]/span").click
+      sleep 2
+      driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td/div/ul/li/a").click
+      slenameep 2
+      wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
+      driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+      wait.until { driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size == (i - 1) }
+    end
+  end
   
   end
 end

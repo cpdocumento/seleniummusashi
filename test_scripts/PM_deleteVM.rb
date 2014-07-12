@@ -25,7 +25,7 @@ class DeleteVM < Minitest::Test
     wait = Selenium::WebDriver::Wait.new(:timeout => 20)
     result = @db.execute("select pm from userindex").first
     current_pm_index = result[0]
-
+    
     login(@driver, @test_data["user_mem"] + current_pm_index.to_s, @test_data["user_password"])
     wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
     
@@ -48,12 +48,6 @@ class DeleteVM < Minitest::Test
     for i in 1..10
       deleteInstance(@driver, @test_data["res_instance"] + i.to_s)
     end
-    
-    #login(@driver, "memkim", @test_data["user_password"])
-    #wait.until { @driver.find_element(:xpath, "//*[@id=\"head-project-name\"]/span/span").text == @test_data["user_project"] + 0.to_s }
-    #
-    #deleteAllVolSnaps(@driver)
-    
   end
   
 end
