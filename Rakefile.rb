@@ -30,7 +30,7 @@ namespace 'musashi' do
     end
   end
 
-  desc "Execute ScenarioC steps 9-32 n times; include TIMES=n="
+  desc "Execute ScenarioC steps 9-32 n times; include TIMES=n"
   task :project  do
     times = ENV['TIMES'].to_i
     file = "test_scripts/projectoperation.rb"
@@ -51,7 +51,7 @@ namespace 'musashi' do
   end
 
   desc "Execute ScenarioD steps 16-25 n times; include TIMES=n"
-  task :vmpreprun do
+  task :vm do
     times = ENV['TIMES'].to_i
     file = "test_scripts/vmoperation.rb"
     times.times do
