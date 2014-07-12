@@ -17,6 +17,7 @@ module Common
 
     wait.until { !(driver.find_element(:xpath, "//*[@id=\"form-manage-keypair\"]/div[1]/input").displayed?) }
     assert !120.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[3]/tbody/tr").size == (rows+1)) rescue false; sleep 1 }, "Timeout. Was unable to import a keypair successfully."
+    puts "Helper: Successfully imported keypair #{ res_keypair }"
   end
 
   def delete_keypair(driver, res_keypair)		
@@ -28,6 +29,7 @@ module Common
     !60.times{ break if (driver.find_element(:xpath, "(//button[@type='button'])[2]").displayed? rescue false); sleep 1 }
     driver.find_element(:xpath, "(//button[@type='button'])[2]").click
     assert !120.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[3]/tbody/tr").size == (rows-1)) rescue false; sleep 1 }, "Timeout. Was unable to delete a keypair successfully."    
+    puts "Helper: Successfully deleted keypair #{ res_keypair }"
   end
 	
   end

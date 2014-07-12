@@ -12,12 +12,14 @@ module Common
     driver.find_element(:xpath, "//input[@value='Login']").click
       
     assert !60.times{ break if (driver.find_element(:xpath, "//*[@id=\"dash-mainbar\"]/div/div[2]/ul[2]/li[2]/a").displayed? rescue false); sleep 1 }, "Unable to login account."
+    puts "Helper: Successfully logged in #{ username }"
   end
 
   def logout(driver)
     driver.find_element(:link_text, "Logout").click
     
     assert !60.times{ break if (driver.find_element(:xpath, "//input[@type='text']").displayed? rescue false); sleep 1 }, "Unable to logout account."
+    puts "Helper: Successfully logged out."
   end
 
   end

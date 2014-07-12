@@ -45,6 +45,7 @@ module Common
 		driver.find_element(:xpath, "//*[@id='monitoring-settings']/div[7]/button[1]").click
 		
 		!60.times{ break if (driver.find_element(:xpath, "//*[@id='monitoring-settings']/div[2]/div/div/p/p")).text == "Monitoring settings has been successfully updated." rescue false; sleep 2}
+	  puts "Helper: Successfully saved node settings."
 	end
 
 	def update_instance_monitoring(driver, instance_name, warning, error)
@@ -86,6 +87,7 @@ module Common
 
 		#save settings
 		driver.find_element(:xpath, "//*[@id='instance-monitoring-settings']/div[7]/button[1]").click
+		puts "Helper: Successfully saved instance settings."
   end
 end
 end

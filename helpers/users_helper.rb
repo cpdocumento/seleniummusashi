@@ -13,6 +13,7 @@ module Common
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
     
     assert !60.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr").size == (rows-1)) rescue false; sleep 1 }, "Timeout. Was unable to delete the PM successfully."
+    puts "Helper: Successfully deleted member #{ username }"
   end
   
   def delete_pa(driver, username)
@@ -26,6 +27,7 @@ module Common
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr/td[normalize-space(text())=\"#{ username }\"]/..//td/div/ul/li[2]/a").click
     wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
+    puts "Helper: Successfully deleted project and user #{ username }"
   end
 
   end

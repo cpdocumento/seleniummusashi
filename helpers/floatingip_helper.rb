@@ -19,6 +19,7 @@ module Common
     # wait until the IP is attached
     wait.until { !(driver.find_element(:xpath, "//select[@ng-model=\"fip.instance_option\"]").displayed?) }
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ ip }\"]/..//td[3]").text == instance_name) rescue false; sleep 1 }, "Timeout. It is taking too long to attach IP to instance."
+    puts "Helper: Successfully attached floating IP #{ ip } to instance #{ instance_name }"
   end
 
   def detachIP(driver, instance_name)
@@ -39,6 +40,7 @@ module Common
     
     # wait until the IP is detached
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ ip }\"]/..//td/div/button[1]").text =~ /Attach/) rescue false; sleep 1 }, "Timeout. It is taking too long to detach the IP from instance."
+    puts "Helper: Successfully detached an IP from instance #{ instance_name }"
   end
 
   def allocateIP(driver)
@@ -54,6 +56,7 @@ module Common
     driver.find_element(:xpath, "//div[3]/button[2]").click
 
     assert !60.times{ break if ((driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr").size == (rows+1)) rescue false); sleep 1 }, "Unable to allocate an IP successfully."
+    puts "Helper: Successfully allocated a floating IP"
   end
 
   def disallocateIP(driver, ip)
@@ -70,6 +73,7 @@ module Common
 		sleep 2
     driver.find_element(:xpath, "(//button[@type='button'])[2]").click
     assert !60.times{ break if ((driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr").size == (rows-1)) rescue false); sleep 1 }
+    puts "Helper: Successfully released floating IP #{ ip }"
   end
 
   end

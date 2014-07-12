@@ -39,6 +39,7 @@ module Common
     !60.times{ break if !(driver.find_element(:xpath, "//div[@window-class=\"wizard-modal\"]").displayed? rescue false); sleep 1 }
     sleep 10
     assert !180.times{ break if (driver.find_element(:xpath, "//tr/td[@id=\"instance-name\"]/a[normalize-space(text())=\"#{ name }\"]/../..//td[4]").text =~ /ACTIVE/) rescue false; sleep 2 }, "Timeout. Instance is not ACTIVE within the wait time set."
+    puts "Helper: Successfully created instance #{ name }"
   end
   
   def stopInstance(driver, instance_name)
@@ -56,6 +57,7 @@ module Common
     
     # wait until instance status is SHUTOFF
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"details-action\"]/table/tbody/tr[1]/td[2]").text =~ /SHUTOFF/) rescue false; sleep 2 }, "Timeout. Instance is still not in SHUTOFF state within the wait time set."
+    puts "Helper: Successfully stopped instance #{ instance_name }"
   end
   
   def deleteInstance(driver, instance_name)
@@ -84,6 +86,7 @@ module Common
     driver.find_element(:css, "i.fa.fa-hdd-o").click
     
     assert !180.times{ break if (driver.find_elements(:xpath, "//*[@id=\"instances-list\"]/tbody/tr").size == (rows-1)) rescue false; sleep 2 }, "Timeout. Instance is taking too long to delete."
+    puts "Helper: Successfully deleted instance #{ instance_name }"
   end
   
   def createSnapshot(driver, instance_name, snapshot_name)
@@ -114,6 +117,7 @@ module Common
     driver.find_element(:css, "i.fa.fa-floppy-o").click
     sleep 5
     assert !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr/td[normalize-space(text())=\"snapshot for #{ snapshot_name }\"]/..//td[normalize-space(text())=\"\"]/..//td[3]").text =~/available/) rescue false; sleep 3 }, "Timeout. Was not able to create a snapshot successfully."
+    puts "Helper: Successfully snapshotted instance #{ instance_name }"
   end
   
   def deleteSnapshot(driver, snapshot_name)
@@ -131,6 +135,7 @@ module Common
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
     sleep 2
     assert !120.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr").size == (rows-1)) rescue false; sleep 1 }, "Timeout. Was not able to delete the snapshot successfully."
+    puts "Helper: Successfully deleted snapshot #{ snapshot_name }"
   end
   
   end

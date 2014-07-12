@@ -22,6 +22,7 @@ module Common
     
     # wait until the volume is no longer in creating status
     assert !180.times{ break if !(driver.find_element(:xpath, "//tr/td[normalize-space(text())=\"#{ name }\"]/..//td[4]").text =~ /creating/) rescue false; sleep 2 }, "Timeout. Volume is still creating."
+    puts "Helper: Successfully created volume #{ name }"
   end
 
   def attachVolume(driver, vol_name, instance_name)
@@ -42,6 +43,7 @@ module Common
     # wait until the volume is no longer in attaching status
     wait.until { !(driver.find_element(:xpath, "//*[@id=\"attachVolume\"]/div/select").displayed?) }
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /in-use/) rescue false; sleep 2 }, "Timeout. Volume is taking too long to attach."
+    puts "Helper: Successfully attached volume #{ vol_name } to instance"
   end
   
   def detachVolume(driver, vol_name)
@@ -60,6 +62,7 @@ module Common
     # wait until the volume is no longer attached
     wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[1]/div").displayed? }
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /available/) rescue false; sleep 2 }, "Timeout. Volume is taking too long to detach."
+    puts "Helper: Successfully detached volume #{ vol_name }"
   end
   
   def deleteVolume(driver, vol_name)
@@ -79,6 +82,7 @@ module Common
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
     
     assert !180.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr").size = (rows-1)) rescue false; sleep 1 }, "Timeout. Volume is taking too long to delete." 
+    puts "Helper: Successfully deleted volume #{ vol_name }"
   end
   
   def deleteBootableVolume(driver, boot_volume)
@@ -118,11 +122,12 @@ module Common
       driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[5]/div/button[2]/span").click
       sleep 2
       driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td/div/ul/li/a").click
-      slenameep 2
+      sleep 2
       wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
       driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
       wait.until { driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size == (i - 1) }
     end
+    puts "Helper: Successfully cleaned up volume snapshots"
   end
   
   end

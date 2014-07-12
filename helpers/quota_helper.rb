@@ -38,10 +38,10 @@ module Common
     driver.find_element(:name, "snapshots").send_keys(snapshots)
     driver.find_element(:xpath, "/html/body/div[3]/div/div/div[3]/button[2]").click
 
-    wait.until { !(driver.find_element(:xpath, "//div[2]/form/h3[1]").text =~ /Compute/) }
     wait.until { driver.find_element(:xpath, "//p[@ng-bind-html=\"alert.msgs\"]").displayed? }
     sleep 2
-    wait.until { driver.find_element(:xpath, "//div[2]/table/tbody/tr/td[normalize-space(text())=\"#{ project_name }\"]").displayed? }
+    assert !120.times{ break if (driver.find_element(:xpath, "//div[2]/table/tbody/tr/td[normalize-space(text())=\"#{ project_name }\"]").displayed?) rescue false; sleep 1 }, "Timeout. Project cannot be found."
+    puts "Helper: Successfully saved quota for #{ project_name }"
   end
 
   end

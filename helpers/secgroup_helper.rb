@@ -18,6 +18,7 @@ module Common
     driver.find_element(:xpath, "//div[3]/button[2]").click
     sleep 2
     assert !60.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[2]/tbody/tr").size == (rows+1)) rescue false; sleep 1 }, "Timeout. Was unable to create a secgroup successfully."
+    puts "Helper: Successfully created security group #{ res_secgroup }"
   end
 
   def delete_secgroup(driver, res_secgroup)
@@ -32,6 +33,7 @@ module Common
     !60.times{ break if (driver.find_element(:xpath, "(//button[@type='button'])[2]").displayed? rescue false); sleep 1 }
     driver.find_element(:xpath, "(//button[@type='button'])[2]").click
     assert !60.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[2]/tbody/tr").size == (rows-1)) rescue false; sleep 1 }, "Timeout. Was unable to delete a secgroup successfully."
+    puts "Helper: Successfully deleted security group #{ res_secgroup }"
   end
 
   def custom_rule(driver, res_secgroup, sec_rules)
@@ -45,6 +47,7 @@ module Common
     addRule(driver, sec_rules)
     
     driver.find_element(:css, "body > div.modal.fade.dash-width-500.in > div > div > div.modal-footer.ng-scope > button.btn.btn-primary.ng-binding").click  
+    puts "Helper: Successfully added custom rules to #{ res_secgroup }"
   end
   
   def addRule(driver, sec_rules)
