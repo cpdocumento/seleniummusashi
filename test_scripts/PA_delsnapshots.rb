@@ -19,7 +19,7 @@ class DeleteSnapshot < Minitest::Test
     @driver.quit
   end
   
-  def test_createSnapshot
+  def test_deleteSnapshot
     @driver.manage().window().maximize()
     wait = Selenium::WebDriver::Wait.new(:timeout => 20)
 

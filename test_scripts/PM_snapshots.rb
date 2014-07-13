@@ -5,6 +5,7 @@ class CreateSnapshot < Minitest::Test
 
   include Common::InstanceHelper
   include Common::AuthenticationHelper
+  include Common::VolumeHelper
 
   def setup
     @test_data = Data.config.test_data
@@ -30,8 +31,8 @@ class CreateSnapshot < Minitest::Test
     for i in 1..10
       createSnapshot(@driver, @test_data["res_instance"] + i.to_s,  @test_data["res_snapshot"] + i.to_s)
     end
-    
-    logout(@driver)
-    
+  
+    logout(@driver)  
   end
+  
 end

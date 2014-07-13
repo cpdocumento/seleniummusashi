@@ -41,18 +41,16 @@ class ScenarioCPrep < MiniTest::Test
     warning = 30
     error = 35
     increase = 5
-    
-    sec_rules = [ {from:"-1", to:"-1", ip:"0.0.0.0/0", protocol:"ICMP"},
-                  {from:"443", to:"443", ip:"0.0.0.0/0", protocol:"TCP"},
-                  {from:"161", to:"161", ip:"0.0.0.0/0", protocol:"UDP"},
-                  {from:"22", to:"22", ip:"0.0.0.0/0", protocol:"TCP"},
-                  {from:"80", to:"80", ip:"0.0.0.0/0", protocol:"TCP"},
-                  {from:"8080", to:"8080", ip:"0.0.0.0/0", protocol:"TCP"},
-                  {from:"3306", to:"3306", ip:"0.0.0.0/0", protocol:"TCP"},
-                  {from:"1", to:"4", ip:"0.0.0.0/0", protocol:"TCP"},
-                  {from:"2", to:"5", ip:"0.0.0.0/0", protocol:"UDP"},
-                  {from:"3", to:"6", ip:"0.0.0.0/0", protocol:"ICMP"}
-                ]
+    q_vcpu = 50
+    q_instances = 15
+    q_ram = 50000
+    q_fip = 15
+    q_keypair = 15
+    q_secgroup = 15
+    q_secgroup_rules = 20
+    q_storage = 10000
+    q_volumes = 20
+    q_snapshots = 30
     
     # MONITORING SETTINGS
     puts "\n======Logging in SA account======"

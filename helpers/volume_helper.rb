@@ -101,7 +101,7 @@ module Common
       desc = driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[2]").text
       if (name==boot_volume && desc=="")
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/button[2]/span").click
-        sleep 2
+        sleep 1
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/ul/li/a").click
         wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
@@ -117,7 +117,7 @@ module Common
     wait = Selenium::WebDriver::Wait.new(:timeout => 60)
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
-    sleep 2
+    sleep 5
     waitForProcessingVolumeSnapshots(driver)
     rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
     rows.downto(2) do |i|
@@ -134,9 +134,10 @@ module Common
   
   def waitForProcessingVolumeSnapshots(driver)
     wait = Selenium::WebDriver::Wait.new(:timeout => 120)
+    sleep 2
     rows = driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr").size
     rows.downto(2) do |i|
-      wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[3]").text == "available" || "error" }
+      !120.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[3]").text == ("available" || "error")) rescue false; sleep 2 }
     end
   end
   
