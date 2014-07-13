@@ -52,8 +52,8 @@ module Common
     wait.until { driver.find_element(:xpath, "//div[@id='dash-access']/div[3]/div[2]/button").displayed? }
     rows = driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr").size
     driver.find_element(:xpath, "//div[@id='dash-access']/div[3]/div[2]/button").click
-    wait.until { driver.find_element(:css, "div.form-group").displayed? }
-    driver.find_element(:xpath, "//div[3]/button[2]").click
+    wait.until { driver.find_element(:xpath, "//select[@ng-model=\"floating_ip.pool\"]").displayed? }
+    driver.find_element(:css, "body > div.modal.fade.in > div > div > div.modal-footer.ng-scope > button.btn.btn-primary.ng-binding").click
 
     assert !60.times{ break if ((driver.find_elements(:xpath, "//*[@id=\"dash-access\"]/table[1]/tbody/tr").size == (rows+1)) rescue false); sleep 1 }, "Unable to allocate an IP successfully."
     puts "Helper: Successfully allocated a floating IP"

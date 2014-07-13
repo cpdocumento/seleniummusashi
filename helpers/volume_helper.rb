@@ -26,11 +26,12 @@ module Common
   end
 
   def attachVolume(driver, vol_name, instance_name)
-    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 120)
    
     # click attach option of volume
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
+    sleep 2
     wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[7]/div/button").displayed? }
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[7]/div/button").click
     
@@ -102,6 +103,7 @@ module Common
       if (name==boot_volume && desc=="")
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/button[2]/span").click
         sleep 1
+        wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/ul/li/a").displayed? }
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ rows }]/td[5]/div/ul/li/a").click
         wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }
         driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
@@ -114,7 +116,7 @@ module Common
   end
   
   def deleteAllVolumeSnapshots(driver)
-    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 180)
     wait.until { driver.find_element(:css, "i.fa.fa-floppy-o").displayed? }
     driver.find_element(:css, "i.fa.fa-floppy-o").click    
     sleep 5
@@ -123,6 +125,7 @@ module Common
     rows.downto(2) do |i|
       driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td[5]/div/button[2]/span").click
       sleep 2
+      wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td/div/ul/li/a").displayed? }
       driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[2]/tbody/tr[#{ i }]/td/div/ul/li/a").click
       sleep 2
       wait.until { driver.find_element(:xpath, "//div[@ng-show=\"confirm.title\"]").displayed? }

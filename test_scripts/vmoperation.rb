@@ -77,15 +77,13 @@ class ScenarioD < MiniTest::Test
     attachIP(@driver, @test_data["res_instance"], ip)
     puts "Finished attaching an IP to instance."
     
+    warning = 30
+    error = 35
+    increase = 5
     for i in loop_start..loop_end
-      warning = 30
-      error = 35
-      increase = 5
-      for t in loop_start..loop_end
-        update_instance_monitoring(@driver, @test_data["res_instance"], warning, error)
-        warning += increase
-        error += increase
-      end      
+      update_instance_monitoring(@driver, @test_data["res_instance"], warning, error)
+      warning += increase
+      error += increase          
     end
     puts "Finished updating monitoring settings #{ loop_end } times for the instance."
      
@@ -98,7 +96,7 @@ class ScenarioD < MiniTest::Test
     stopInstance(@driver, @test_data["res_instance"])
     puts "Instance has been stopped."
     deleteVolume(@driver, @test_data["res_volume"])
-    puts "Volumes has been deleted."
+    puts "Volume has been deleted."
     startInstance(@driver, @test_data["res_instance"])
     puts "Instance has been started."
     
