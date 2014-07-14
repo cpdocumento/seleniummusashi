@@ -233,14 +233,14 @@ class ScenarioA < MiniTest::Test
     puts "Updated the quota for the user project #{ loop_end } times"
     
     # DELETE PROJECTS/PAS
-    #pa_result = @db.execute("select pa from userindex").first.map(&:to_i)
-    #current_pa_index = pa_result[0]
-    #last_pa_index = current_pa_index + loop_end
-    #for i in current_pa_index..last_pa_index
-    #  delete_pa(@driver, @test_data["user_pa"] + i.to_s)
-    #end
-    #@db.execute "update userindex set pa=?", last_pa_index + 1
-    #puts "Deleted #{ loop_end } project admins and their projects."
+    pa_result = @db.execute("select pa from userindex").first.map(&:to_i)
+    current_pa_index = pa_result[0]
+    last_pa_index = current_pa_index + loop_end
+    for i in current_pa_index..last_pa_index
+      delete_pa(@driver, @test_data["user_pa"] + i.to_s)
+    end
+    @db.execute "update userindex set pa=?", last_pa_index + 1
+    puts "Deleted #{ loop_end } project admins and their projects."
     logout(@driver)
   end
 

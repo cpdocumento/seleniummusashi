@@ -2,7 +2,7 @@ module Common
   module UsersHelper
 
   def delete_member(driver, username)    
-    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+    wait = Selenium::WebDriver::Wait.new(:timeout => 180)
       
     wait.until { driver.find_element(:css, "i.fa.fa-group").displayed? }
     driver.find_element(:css, "i.fa.fa-group").click
@@ -12,7 +12,7 @@ module Common
     driver.find_element(:xpath, "(//tr[@class=\"ng-scope\"]/td[normalize-space(text())=\"#{ username }\"]/..//a[contains(text(),'Delete Member')])").click
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
     
-    assert !60.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr").size == (rows-1)) rescue false; sleep 1 }, "Timeout. Was unable to delete the PM successfully."
+    assert !180.times{ break if (driver.find_elements(:xpath, "//*[@id=\"dv-main-content\"]/table/tbody/tr").size == (rows-1)) rescue false; sleep 1 }, "Timeout. Was unable to delete the PM successfully."
     puts "Helper: Successfully deleted member #{ username }"
   end
   
