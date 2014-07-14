@@ -11,7 +11,7 @@ module Common
     sleep 5
     driver.find_element(:xpath, "//*[@id=\"side-action\"]").click
     wait.until { driver.find_element(:xpath, "/html/body/div[3]/div/div").displayed? }
-    
+    sleep 1
     # step 1
     driver.find_element(:name, "name").clear
     driver.find_element(:name, "name").send_keys(name)

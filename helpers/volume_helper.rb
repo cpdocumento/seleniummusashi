@@ -42,7 +42,6 @@ module Common
     driver.find_element(:xpath, "//div[3]/button[2]").click
     
     # wait until the volume is no longer in attaching status
-    wait.until { !(driver.find_element(:xpath, "//*[@id=\"attachVolume\"]/div/select").displayed?) }
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /in-use/) rescue false; sleep 2 }, "Timeout. Volume is taking too long to attach."
     puts "Helper: Successfully attached volume #{ vol_name } to instance"
   end
@@ -61,7 +60,6 @@ module Common
     driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[2]/div/button[1]").click
   
     # wait until the volume is no longer attached
-    wait.until { driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/div[1]/div").displayed? }
     assert !180.times{ break if (driver.find_element(:xpath, "//*[@id=\"dv-main-content\"]/table[1]/tbody/tr/td[normalize-space(text())=\"#{ vol_name }\"]/..//td[4]").text =~ /available/) rescue false; sleep 2 }, "Timeout. Volume is taking too long to detach."
     puts "Helper: Successfully detached volume #{ vol_name }"
   end
